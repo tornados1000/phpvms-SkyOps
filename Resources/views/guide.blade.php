@@ -485,10 +485,10 @@ html.ap-light .so-gd-cfg{box-shadow:0 1px 6px rgba(0,0,0,.05)}
         <table class="so-gd-table">
             <thead><tr><th>{{ __('skyops::skyops.guide_setting') }}</th><th>{{ __('skyops::skyops.guide_example') }}</th><th>{{ __('skyops::skyops.guide_description') }}</th></tr></thead>
             <tbody>
-                <tr><td><span class="so-gd-code">full</span></td><td>Thomas Kant</td><td>{{ __('skyops::skyops.guide_adm_name_full') }}</td></tr>
-                <tr><td><span class="so-gd-code">short</span></td><td>Thomas K.</td><td>{{ __('skyops::skyops.guide_adm_name_short') }}</td></tr>
-                <tr><td><span class="so-gd-code">callsign</span></td><td>GSG001</td><td>{{ __('skyops::skyops.guide_adm_name_callsign') }}</td></tr>
-                <tr><td><span class="so-gd-code">id</span></td><td>GSG001 (Thomas K.)</td><td>{{ __('skyops::skyops.guide_adm_name_id') }}</td></tr>
+                <tr><td><span class="so-gd-code">full</span></td><td>Haris Rig</td><td>{{ __('skyops::skyops.guide_adm_name_full') }}</td></tr>
+                <tr><td><span class="so-gd-code">short</span></td><td>Haris R.</td><td>{{ __('skyops::skyops.guide_adm_name_short') }}</td></tr>
+                <tr><td><span class="so-gd-code">callsign</span></td><td>NXS001</td><td>{{ __('skyops::skyops.guide_adm_name_callsign') }}</td></tr>
+                <tr><td><span class="so-gd-code">id</span></td><td>NXS001 (Haris R.)</td><td>{{ __('skyops::skyops.guide_adm_name_id') }}</td></tr>
             </tbody>
         </table>
         <div class="so-gd-warn so-gd-note">
