@@ -1,6 +1,6 @@
 # SkyOps — Sky Operations Center for phpVMS 7
 
-**SkyOps** is a read-only operations center module for [phpVMS 7](https://phpvms.net). It gives virtual airline staff and pilots a unified view of PIREPs, fleet, pilot statistics, airline health, and scheduled departures — all in one place, with zero database migrations.
+**SkyOps** is a read-only operations center module for [phpVMS 7](https://phpvms.net). It gives virtual airline staff and pilots a unified view of PIREPs, fleet, pilot statistics, airline health, and scheduled departures — all in one place, without new tables (one migration adds a single index to the core `flights` table).
 
 ---
 
@@ -20,7 +20,7 @@
 
 **Technical highlights:**
 
-- Pure Eloquent + `DB::table()` — no raw SQL, no migrations, no new tables
+- Pure Eloquent + `DB::table()` — no new tables; one migration (v1.1.3) adds an index on `flights` for the departures board
 - Cross-database: MySQL, PostgreSQL, SQLite
 - Auto-detects table names and prefixes via phpVMS models
 - 9 languages: DE, EN, ES, FR, IT, JA, PT-PT, PT-BR, TR
@@ -65,7 +65,7 @@
 modules/SkyOps/Config/config.php
 ```
 
-SkyOps is **read-only** and runs **zero migrations** — this file only changes *how things are displayed and behave*, never your data. It is **install-owned**: a module update will **not** overwrite it, so your values survive upgrades. After editing, clear the cache (visit `/update`, or run `php artisan config:cache && php artisan cache:clear`).
+SkyOps is **read-only** (its only migration adds an index, never data) — this file only changes *how things are displayed and behave*, never your data. It is **install-owned**: a module update will **not** overwrite it, so your values survive upgrades. After editing, clear the cache (visit `/update`, or run `php artisan config:cache && php artisan cache:clear`).
 
 🇩🇪 **Deutsch** — Alle Einstellungen stehen in **einer Datei** (kein `.env` nötig):
 
@@ -73,7 +73,7 @@ SkyOps is **read-only** and runs **zero migrations** — this file only changes 
 modules/SkyOps/Config/config.php
 ```
 
-SkyOps ist **read-only** und führt **keine Migrationen** aus — diese Datei steuert nur *Anzeige und Verhalten*, nie eure Daten. Sie ist **install-eigen**: Ein Modul-Update überschreibt sie **nicht**, eure Werte bleiben erhalten. Nach Änderungen den Cache leeren (`/update` aufrufen oder `php artisan config:cache && php artisan cache:clear`).
+SkyOps ist **read-only** (die einzige Migration legt einen Index an, nie Daten) — diese Datei steuert nur *Anzeige und Verhalten*, nie eure Daten. Sie ist **install-eigen**: Ein Modul-Update überschreibt sie **nicht**, eure Werte bleiben erhalten. Nach Änderungen den Cache leeren (`/update` aufrufen oder `php artisan config:cache && php artisan cache:clear`).
 
 > **Colors & fonts / Farben & Schriften:** see the [Theming Guide](THEMING.md) — step-by-step instructions for matching SkyOps to your VA design. / siehe den [Theming-Leitfaden](THEMING.md) — Schritt für Schritt zur eigenen VA-Optik.
 
@@ -107,7 +107,7 @@ SkyOps ist **read-only** und führt **keine Migrationen** aus — diese Datei st
 | `departures.show_booking_status` | `true` | Show bid / aircraft-availability badges in sync mode. |
 | `departures.aircraft_type_source` | `flight_icao` | Aircraft types in the detail panel: `flight_icao` (types of the subfleets assigned to **that flight** — recommended), `aircraft_icao` (all types the airline operates), `subfleet_type` (full subfleet names), `subfleet_segment:N` (Nth dash-segment of the subfleet name). |
 | `departures.aircraft_active_only` | `true` | Exclude aircraft not in active status (maintenance / stored / retired). Also governs the **Aircraft Type** filter and its dropdown. |
-| `features.*` | mixed | Toggles: `show_network_badge`, `show_source_badge`, `show_landing_rate`, `show_fuel` (on); `featured_destinations`, `show_finance_link` (off — set `true` to show a finance link in the layout). |
+| `features.*` | mixed | Toggles: `show_network_badge`, `show_source_badge`, `show_landing_rate`, `show_fuel` (on); `featured_destinations`, `show_finance_link` (off — set `true` to show a finance link in the layout, or via `.env SKYOPS_SHOW_FINANCE_LINK=true`). |
 | `theme.glass_mode` | `true` | `true` = translucent, blurred cards (great over background images/gradients). `false` = solid cards using the `theme.solid` colors (card/inner background + border, per dark/light). |
 
 > **Aircraft Type filter:** the Departures **Aircraft Type** dropdown and filter are ICAO-based and honor `aircraft_active_only`. A flight whose airline + flight number is tied to subfleets matches only when an assigned subfleet operates the chosen type (true per-flight restriction); a flight with no assignment falls back to airline-wide. It pairs best with the `flight_icao` / `aircraft_icao` display modes (both ICAO-based), so the detail panel shows exactly the types you filter by.
@@ -142,7 +142,7 @@ SkyOps ist **read-only** und führt **keine Migrationen** aus — diese Datei st
 | `departures.show_booking_status` | `true` | Im Sync-Modus Bid-/Flugzeug-Verfügbarkeits-Badges zeigen. |
 | `departures.aircraft_type_source` | `flight_icao` | Flugzeugtypen im Detail-Panel: `flight_icao` (Typen der **diesem Flug** zugewiesenen Subfleets — empfohlen), `aircraft_icao` (alle Typen der Airline), `subfleet_type` (komplette Subfleet-Namen), `subfleet_segment:N` (N-tes Bindestrich-Segment des Namens). |
 | `departures.aircraft_active_only` | `true` | Nur aktive Flugzeuge (Wartung / Lager / ausgemustert raus). Gilt auch für den **Flugzeugtyp**-Filter und sein Dropdown. |
-| `features.*` | gemischt | Schalter: `show_network_badge`, `show_source_badge`, `show_landing_rate`, `show_fuel` (an); `featured_destinations`, `show_finance_link` (aus — `true` zeigt einen Finanz-Link im Layout). |
+| `features.*` | gemischt | Schalter: `show_network_badge`, `show_source_badge`, `show_landing_rate`, `show_fuel` (an); `featured_destinations`, `show_finance_link` (aus — `true` zeigt einen Finanz-Link im Layout, auch per `.env SKYOPS_SHOW_FINANCE_LINK=true`). |
 | `theme.glass_mode` | `true` | `true` = halbtransparente Karten mit Blur (passt zu Hintergrundbildern/Verläufen). `false` = solide Karten mit den `theme.solid`-Farben (Karten-/Innen-Hintergrund + Rahmen, je dark/light). |
 
 > **Flugzeugtyp-Filter:** Das **Flugzeugtyp**-Dropdown und der Filter der Abflugtafel arbeiten ICAO-basiert und respektieren `aircraft_active_only`. Ein Flug, dessen Airline + Flugnummer Subfleets zugewiesen ist, matcht nur, wenn ein zugewiesener Subfleet den gewählten Typ betreibt (echte Per-Flug-Eingrenzung); ein Flug ohne Zuweisung fällt auf airline-weit zurück. Am stimmigsten mit den Anzeige-Modi `flight_icao` / `aircraft_icao` (beide ICAO-basiert) — dann zeigt das Detail genau die Typen, nach denen man filtert.
